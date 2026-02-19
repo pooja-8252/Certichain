@@ -1,0 +1,54 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #0f172a;
+  color: white;
+}
+
+body {
+  background: radial-gradient(
+      circle at top left,
+      rgba(99, 102, 241, 0.15),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(168, 85, 247, 0.15),
+      transparent 40%
+    ),
+    #0f172a;
+}
+body {
+  background:
+    radial-gradient(circle at top left, rgba(99,102,241,0.15), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(168,85,247,0.15), transparent 40%),
+    #0f172a;
+} */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream-bg: #F7F5F0;
+  --dark-surface: #111214;
+  --soft-border: #E4E2DC;
+  --text-primary: #111214;
+  --text-muted: #6A6A6A;
+  --success: #2E7D32;
+  --warning: #ED6C02;
+  --danger: #C62828;
+}
+
+/* Smooth fonts */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--cream-bg);
+  color: var(--text-primary);
+  font-feature-settings: "ss01", "ss02";
+}
