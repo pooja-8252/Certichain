@@ -41,10 +41,11 @@ export default function CertificateList() {
       // const signerAddress = await contract.runner?.getAddress?.();
       // if (!signerAddress) throw new Error("Could not get wallet address.");
 
-      const provider = new (await import("ethers")).ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const signerAddress = await signer.getAddress();
+      const accounts = await window.ethereum.request({ method: "eth_accounts" }) as string[];
+      const signerAddress = accounts[0];
       if (!signerAddress) throw new Error("Could not get wallet address.");
+
+
 
       const ids: bigint[] = await contract.getStudentCertificates(signerAddress);
 
