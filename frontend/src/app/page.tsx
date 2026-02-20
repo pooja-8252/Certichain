@@ -141,7 +141,7 @@ export default function Home() {
 
         {/* ── Footer ── */}
         <footer className="mt-auto border-t border-white/[0.04] py-6 text-center">
-          <p className="text-gray-700 text-xs tracking-widest uppercase">© 2026 CertiChain · Built by Alpha</p>
+          <p className="text-gray-700 text-xs tracking-widest uppercase">© 2026 E-Certify · Built by Alpha</p>
         </footer>
       </div>
 

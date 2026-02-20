@@ -123,7 +123,9 @@ export default function IssueCertificateForm({ walletConnected, onConnectWallet 
   }
 
   return (
-     <div className="max-w-xl mx-auto space-y-5">
+    //  <div className="max-w-xl mx-auto space-y-5">
+    <div className="max-w-xl mx-auto space-y-5 px-4 sm:px-0">
+
       {/* Progress steps */}
       {isLoading && (
         <div className="flex items-center gap-3 px-5 py-4 rounded-2xl

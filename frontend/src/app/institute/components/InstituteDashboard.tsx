@@ -103,9 +103,11 @@ export default function InstituteDashboard() {
       <div className="relative max-w-5xl mx-auto px-6 py-10">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-10">
+        {/* <div className="flex items-center justify-between mb-10"> */}
+        <div className="flex flex-col gap-4 mb-10 sm:flex-row sm:items-center sm:justify-between">
+
           <div>
-            <p className="text-[11px] font-mono tracking-[0.3em] text-cyan-400 uppercase mb-2">Institute Portal</p>
+            <p className="text-[18px] font-mono tracking-[0.3em] text-cyan-400 uppercase mb-3">Institute Portal</p>
             <h1 className="text-4xl font-extrabold tracking-tight text-white">Certificate Management</h1>
             {firebaseEmail && <p className="text-gray-400 text-sm mt-1">{firebaseEmail}</p>}
           </div>
@@ -141,7 +143,9 @@ export default function InstituteDashboard() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        {/* <div className="grid grid-cols-3 gap-4 mb-8"> */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+
           <div className="px-6 py-4 rounded-2xl bg-white/8 border border-white/15 text-center">
             <p className="text-3xl font-bold text-cyan-400">{issuedCount === null ? "—" : issuedCount}</p>
             <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">Certificates Issued</p>
@@ -175,7 +179,9 @@ export default function InstituteDashboard() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-8 p-1.5 bg-white/5 border border-white/15 rounded-2xl w-fit">
+        {/* <div className="flex gap-2 mb-8 p-1.5 bg-white/5 border border-white/15 rounded-2xl w-fit"> */}
+        <div className="flex gap-2 mb-8 p-1.5 bg-white/5 border border-white/15 rounded-2xl w-fit overflow-x-auto max-w-full">
+
           {TABS.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`
@@ -199,7 +205,12 @@ export default function InstituteDashboard() {
           <PendingRequests walletAddress={walletAddress} walletConnected={walletConnected} />
         )}
         {activeTab === "issued" && walletConnected && walletAddress.length === 42 ? (
-          <InstituteCertificateList walletAddress={walletAddress} walletConnected={walletConnected} />
+          // <InstituteCertificateList walletAddress={walletAddress} walletConnected={walletConnected} />
+          <InstituteCertificateList 
+            walletAddress={walletAddress} 
+            walletConnected={walletConnected}
+            onCountLoaded={(count) => setIssuedCount(count)}
+                />
         ) : activeTab === "issued" && (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <p className="text-gray-400 text-sm">Connect your wallet to view issued certificates</p>

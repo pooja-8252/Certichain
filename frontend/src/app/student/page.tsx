@@ -13,7 +13,9 @@ export default function StudentDashboard() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_30%,rgba(88,101,242,0.12),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_70%,rgba(0,212,255,0.08),transparent_50%)]" />
         
-        <div className="relative max-w-7xl mx-auto px-8 py-16 space-y-10">
+        {/* <div className="relative max-w-7xl mx-auto px-8 py-16 space-y-10"> */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-16 space-y-10">
+
           {/* Header */}
           <div className="space-y-4">
             <h1 className="text-3xl font-semibold text-white tracking-tight">

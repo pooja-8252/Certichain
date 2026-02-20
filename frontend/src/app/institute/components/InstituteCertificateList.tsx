@@ -16,13 +16,17 @@ interface Cert {
 interface Props {
   walletAddress: string;
   walletConnected: boolean;
+  onCountLoaded?: (count: number) => void; // add this
+
 }
 
 function isValidAddress(addr: string): boolean {
   return typeof addr === "string" && addr.startsWith("0x") && addr.length === 42;
 }
 
-export default function InstituteCertificateList({ walletAddress, walletConnected }: Props) {
+// export default function InstituteCertificateList({ walletAddress, walletConnected }: Props) {
+export default function InstituteCertificateList({ walletAddress, walletConnected, onCountLoaded }: Props) {
+
   const [certs, setCerts] = useState<Cert[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -55,7 +59,10 @@ export default function InstituteCertificateList({ walletAddress, walletConnecte
         })
       );
 
-      setCerts(loaded.reverse());
+    //   setCerts(loaded.reverse());
+    const reversed = loaded.reverse();
+    setCerts(reversed);
+    onCountLoaded?.(reversed.length);
     } catch (err: any) {
       console.error("loadCerts error:", err);
       setError(err?.message || "Failed to load certificates");
