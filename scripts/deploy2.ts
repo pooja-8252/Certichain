@@ -21,6 +21,8 @@ async function main() {
       2
     )
   );
+
+  console.log("Saved to deployed-addresses.json");
 }
 
 main().catch(console.error);

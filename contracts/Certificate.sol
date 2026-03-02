@@ -98,7 +98,7 @@ contract Certificate {
     {
         require(student != address(0), "Invalid student address");
         require(bytes(ipfsHash).length > 0, "Invalid IPFS hash");
-        require(accessControl.isStudent(student), "Address is not a registered student");
+        // require(accessControl.isStudent(student), "Address is not a registered student");
 
         _certCounter++;
         _certificates[_certCounter] = Cert({

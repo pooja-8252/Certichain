@@ -114,17 +114,17 @@ async function getSigner(): Promise<ethers.Signer> {
   const provider = new ethers.BrowserProvider(window.ethereum);
   const signer = await provider.getSigner();
   const network = await provider.getNetwork();
-  if (network.chainId !== 10143n) {
+  // if (network.chainId !== 10143n) {
+  //   throw new Error(
+  //     `Wrong network! Switch MetaMask to Monad Testnet.\nCurrently on chainId: ${network.chainId}. Expected: 10143`
+  //   );
+  // }
+//code for sepolia if needed....
+if (network.chainId !== 11155111n) {
     throw new Error(
-      `Wrong network! Switch MetaMask to Monad Testnet.\nCurrently on chainId: ${network.chainId}. Expected: 10143`
+      `Wrong network! Switch MetaMask to Sepolia Testnet.\nCurrently on chainId: ${network.chainId}. Expected: 11155111`
     );
   }
-//code for sepolia if needed....
-// if (network.chainId !== 11155111n) {
-    // throw new Error(
-      // `Wrong network! Switch MetaMask to Sepolia Testnet.\nCurrently on chainId: ${network.chainId}. Expected: 11155111`
-    // );
-  // }
   
 
 

@@ -14,6 +14,7 @@ type Tab = "issue" | "pending" | "issued";
 
 export default function InstituteDashboard() {
   const { logout } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("issue");
   const [walletAddress, setWalletAddress] = useState<string>("");
@@ -26,6 +27,30 @@ export default function InstituteDashboard() {
     if (user?.email) setFirebaseEmail(user.email);
   }, []);
 
+
+  useEffect(() => {
+  if (!window.ethereum) return;
+
+  function handleAccountChange(accounts: string[]) {
+    const savedWallet = localStorage.getItem('sessionWallet');
+    if (accounts.length === 0 || (savedWallet && accounts[0].toLowerCase() !== savedWallet.toLowerCase())) {
+      // Reset local wallet state
+      setWalletAddress("");
+      setWalletConnected(false);
+      setIssuedCount(null);
+      // Logout and redirect
+      signOut(auth).catch(() => {});
+      logout();
+      router.replace("/");
+    }
+  }
+
+  window.ethereum.on('accountsChanged', handleAccountChange);
+  return () => {
+    window.ethereum.removeListener('accountsChanged', handleAccountChange);
+  };
+}, []);
+
   async function connectWallet() {
     try {
       if (!window.ethereum) {
@@ -36,7 +61,10 @@ export default function InstituteDashboard() {
       const addr = accounts[0];
       if (!addr || !addr.startsWith("0x")) return;
       setWalletAddress(addr);
+
       setWalletConnected(true);
+      login('institute', addr); //adding for feature update
+
       try {
         const contract = await getCertificateContract();
         const ids: bigint[] = await contract.getInstituteCertificates(addr);
@@ -157,7 +185,7 @@ export default function InstituteDashboard() {
             <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">Wallet Status</p>
           </div>
           <div className="px-6 py-4 rounded-2xl bg-white/8 border border-white/15 text-center">
-            <p className="text-3xl font-bold text-purple-400">Monad</p>
+            <p className="text-3xl font-bold text-purple-400">SepoliaEth</p>
             <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">Network</p>
           </div>
         </div>
