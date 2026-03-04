@@ -8,7 +8,7 @@ export default function StudentTabs() {
 
   const tabs = [
     { name: "Certificates", path: "/student" },
-    { name: "Request Certificate", path: "/student/request" },
+    // { name: "Request Certificate", path: "/student/request" },
   ];
 
   return (

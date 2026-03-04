@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 
 interface Cert {
   id: bigint;
@@ -20,9 +21,11 @@ interface Props {
 export default function InstituteCertificateCard({ cert, onRevoke, revoking }: Props) {
   const [confirmRevoke, setConfirmRevoke] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showQR, setShowQR] = useState(false);
 
   const shortStudent = `${cert.student.slice(0, 6)}…${cert.student.slice(-4)}`;
   const ipfsUrl = `https://ipfs.io/ipfs/${cert.ipfsHash}`;
+  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://yourapp.vercel.app"}/verify?certId=${cert.id}`;
 
   const status = cert.revoked
     ? { label: "Revoked",  dot: "bg-red-400",     text: "text-red-400",     ring: "bg-red-500/8 border-red-500/15"       }
@@ -102,6 +105,42 @@ export default function InstituteCertificateCard({ cert, onRevoke, revoking }: P
           </svg>
         </a>
       </div>
+
+      {/* QR Code — only for active certs */}
+      {!cert.revoked && (
+        <div className="space-y-2">
+          <button
+            onClick={() => setShowQR(!showQR)}
+            className={`w-full flex items-center justify-center gap-2 h-8 rounded-lg text-xs font-medium border transition-all duration-200 ${
+              showQR
+                ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                : "bg-white/3 border-white/8 text-white/30 hover:bg-white/8 hover:text-white/60"
+            }`}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+                d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+            </svg>
+            {showQR ? "Hide QR Code" : "Show QR Code"}
+          </button>
+
+          {showQR && (
+            <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="p-3 bg-white rounded-xl">
+                <QRCodeSVG
+                  value={verifyUrl}
+                  size={130}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="M"
+                />
+              </div>
+              <p className="text-[11px] text-gray-400">Scan to verify certificate</p>
+              <p className="text-[10px] text-gray-600 font-mono">Cert #{cert.id.toString()}</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Revoke action */}
       {!cert.revoked && (

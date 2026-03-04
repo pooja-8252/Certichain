@@ -2,7 +2,9 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { getCertificateContract } from "@/lib/contracts";
-import CertificateCard from "./CertificateCard1";
+import CertificateCard from "./CertificateCard2";
+// import CertificateCard from "./CertificateCard1";
+
 
 export type Cert = {
   id: number;
