@@ -5,129 +5,148 @@ import Link from 'next/link';
 
 export default function LearnMore() {
   const features = [
-    { icon: Shield, title: "Blockchain Security", desc: "Immutable records stored on a distributed Ethereum ledger.", accent: "cyan" },
-    { icon: Lock, title: "Tamper-Proof", desc: "Cryptographic hashing ensures zero possibility of forgery.", accent: "indigo" },
-    { icon: Zap, title: "Instant Verification", desc: "On-chain verification completes in under 3 seconds.", accent: "cyan" },
-    { icon: Globe, title: "Global Access", desc: "Verify credentials from anywhere in the world, anytime.", accent: "indigo" },
-    { icon: Award, title: "Smart Contracts", desc: "Automated validation with zero manual intervention.", accent: "cyan" },
-    { icon: CheckCircle, title: "100% Authentic", desc: "No fake certificates — every record is on-chain truth.", accent: "indigo" },
+    { icon: Shield,      title: "Blockchain Security",   desc: "Immutable records stored on a distributed Ethereum ledger." },
+    { icon: Lock,        title: "Tamper-Proof",          desc: "Cryptographic hashing ensures zero possibility of forgery." },
+    { icon: Zap,         title: "Instant Verification",  desc: "On-chain verification completes in under 3 seconds." },
+    { icon: Globe,       title: "Global Access",         desc: "Verify credentials from anywhere in the world, anytime." },
+    { icon: Award,       title: "Smart Contracts",       desc: "Automated validation with zero manual intervention." },
+    { icon: CheckCircle, title: "100% Authentic",        desc: "No fake certificates — every record is on-chain truth." },
   ];
 
   const steps = [
-    { num: "01", title: "Upload Certificate", desc: "Institution uploads certificate data to the platform." },
-    { num: "02", title: "Blockchain Storage", desc: "Cryptographic hash is permanently stored on Ethereum." },
-    { num: "03", title: "Generate QR Code", desc: "A unique QR code is generated and linked to the record." },
-    { num: "04", title: "Instant Verification", desc: "Anyone can verify authenticity in seconds, no login needed." },
+    { num: "01", title: "Upload Certificate",  desc: "Institution uploads certificate data to the platform." },
+    { num: "02", title: "Blockchain Storage",  desc: "Cryptographic hash is permanently stored on Ethereum." },
+    { num: "03", title: "Generate QR Code",    desc: "A unique QR code is generated and linked to the record." },
+    { num: "04", title: "Instant Verification",desc: "Anyone can verify authenticity in seconds, no login needed." },
   ];
 
-  return (
-    <div className="min-h-screen bg-[#080c14] text-white">
+  const gold = { color: "#b8893a" };
+  const card = `rounded-2xl border border-[rgba(184,137,58,0.18)] bg-white/50 hover:bg-white/80 hover:border-[rgba(184,137,58,0.35)] transition-all duration-300`;
 
-      {/* Ambient glow */}
+  const Divider = ({ label }: { label: string }) => (
+    <div className="flex items-center gap-4 mb-10">
+      <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(184,137,58,0.2))" }} />
+      <span className="text-[10px] tracking-[0.2em] uppercase font-light" style={{ color: "#b5a795" }}>{label}</span>
+      <div className="flex-1 h-px" style={{ background: "linear-gradient(270deg, transparent, rgba(184,137,58,0.2))" }} />
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen" style={{ background: "#f9f5ef", fontFamily: "'Outfit', sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap');`}</style>
+
+      {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-cyan-500/[0.05] rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/[0.04] rounded-full blur-[100px]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-[120px]" style={{ background: "rgba(184,137,58,0.07)" }} />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[100px]" style={{ background: "rgba(160,130,90,0.06)" }} />
       </div>
 
       <div className="relative max-w-5xl mx-auto px-6">
 
-        {/* Hero */}
-        <section className="pt-24 pb-16 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/5 text-cyan-400 text-[11px] tracking-[0.18em] uppercase font-medium mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+        {/* ── Hero ── */}
+        <section className="pt-20 pb-14 text-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border mb-8 text-[10px] font-medium tracking-[0.2em] uppercase"
+            style={{ borderColor: "rgba(184,137,58,0.25)", background: "rgba(184,137,58,0.07)", color: "#b8893a" }}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#b8893a" }} />
             Secure · Transparent · Decentralized
           </div>
-          <h1 className="text-5xl font-bold tracking-tight mb-4">
+
+          <h1 className="text-5xl font-normal leading-tight mb-4" style={{ fontFamily: "'Playfair Display', serif", color: "#1e1a14" }}>
             Why Choose{" "}
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">E-Certify</span>?
+            <em className="italic font-semibold" style={gold}>CertiChain</em>?
           </h1>
-          <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">
+
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="h-px w-14" style={{ background: "linear-gradient(90deg, transparent, #b8893a 60%)" }} />
+            <span style={{ color: "#b8893a", fontSize: 12 }}>◆</span>
+            <div className="h-px w-14" style={{ background: "linear-gradient(270deg, transparent, #b8893a 60%)" }} />
+          </div>
+
+          <p className="max-w-xl mx-auto leading-relaxed text-[14px] font-light" style={{ color: "#6b5f4e" }}>
             The most advanced blockchain certificate verification platform — built for institutions, trusted by everyone.
           </p>
         </section>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4 mb-12">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-white/[0.06]" />
-          <span className="text-[10px] text-gray-700 tracking-[0.2em] uppercase">Core Features</span>
-          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-white/[0.06]" />
-        </div>
+        {/* ── Core Features ── */}
+        <Divider label="Core Features" />
 
-        {/* Features */}
-        <section className="pb-16 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {features.map(({ icon: Icon, title, desc, accent }) => (
-            <div key={title}
-              className={`group p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-300 ${
-                accent === 'cyan' ? 'hover:border-cyan-500/20' : 'hover:border-indigo-500/20'}`}>
-              <div className={`p-2 rounded-xl border w-fit mb-4 ${
-                accent === 'cyan'
-                  ? 'bg-cyan-500/10 border-cyan-500/20'
-                  : 'bg-indigo-500/10 border-indigo-500/20'}`}>
-                <Icon size={18} className={accent === 'cyan' ? 'text-cyan-400' : 'text-indigo-400'} />
+        <section className="pb-14 grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {features.map(({ icon: Icon, title, desc }) => (
+            <div key={title} className={`${card} p-6`}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-4"
+                style={{ background: "rgba(184,137,58,0.1)", border: "1px solid rgba(184,137,58,0.18)" }}>
+                <Icon size={17} style={gold} />
               </div>
-              <h3 className="text-white font-semibold mb-2">{title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+              <h3 className="font-semibold mb-1.5 text-[15px]" style={{ fontFamily: "'Playfair Display', serif", color: "#1e1a14" }}>{title}</h3>
+              <p className="text-sm font-light leading-relaxed" style={{ color: "#7a6d5e" }}>{desc}</p>
             </div>
           ))}
         </section>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4 mb-12">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-white/[0.06]" />
-          <span className="text-[10px] text-gray-700 tracking-[0.2em] uppercase">How It Works</span>
-          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-white/[0.06]" />
-        </div>
+        {/* ── How It Works ── */}
+        <Divider label="How It Works" />
 
-        {/* Steps */}
-        <section className="pb-16 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <section className="pb-14 grid md:grid-cols-2 lg:grid-cols-4 gap-3">
           {steps.map(({ num, title, desc }, i) => (
-            <div key={num} className="relative group p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] hover:border-cyan-500/20 transition-all duration-300">
-              {/* connector line */}
+            <div key={num} className={`${card} relative p-6`}>
+              {/* Connector */}
               {i < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-10 -right-2 w-4 h-px bg-white/[0.06] z-10" />
+                <div className="hidden lg:block absolute top-9 -right-1.5 w-3 h-px z-10"
+                  style={{ background: "rgba(184,137,58,0.25)" }} />
               )}
-              <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-4">
-                <span className="text-[11px] font-bold text-cyan-400">{num}</span>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-4 text-[11px] font-semibold"
+                style={{ background: "rgba(184,137,58,0.1)", border: "1px solid rgba(184,137,58,0.2)", color: "#b8893a" }}>
+                {num}
               </div>
-              <h3 className="text-white font-semibold text-sm mb-1">{title}</h3>
-              <p className="text-gray-500 text-xs leading-relaxed">{desc}</p>
+              <h3 className="font-semibold text-sm mb-1" style={{ fontFamily: "'Playfair Display', serif", color: "#1e1a14" }}>{title}</h3>
+              <p className="text-xs font-light leading-relaxed" style={{ color: "#7a6d5e" }}>{desc}</p>
             </div>
           ))}
         </section>
 
-        {/* Stats row */}
-        <div className="mb-16 grid grid-cols-3 gap-4">
+        {/* ── Stats ── */}
+        <div className="mb-14 grid grid-cols-3 gap-3">
           {[["< 3s", "Verification Time"], ["100%", "Tamper-Proof"], ["On-Chain", "Permanent Storage"]].map(([val, label]) => (
-            <div key={label} className="p-5 rounded-2xl border border-white/[0.05] bg-white/[0.02] text-center">
-              <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-1">{val}</div>
-              <div className="text-[10px] text-gray-600 tracking-widest uppercase">{label}</div>
+            <div key={label} className={`${card} p-5 text-center`}>
+              <div className="text-2xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif", ...gold }}>{val}</div>
+              <div className="text-[10px] tracking-widest uppercase font-light" style={{ color: "#b5a795" }}>{label}</div>
             </div>
           ))}
         </div>
 
-        {/* CTA */}
+        {/* ── CTA ── */}
         <section className="pb-20">
-          <div className="p-8 rounded-2xl border border-white/[0.05] bg-white/[0.02] text-center">
-            <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 w-fit mx-auto mb-4">
-              <Sparkles size={28} className="text-cyan-400" />
+          <div className={`${card} p-8 text-center`}>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+              style={{ background: "rgba(184,137,58,0.1)", border: "1px solid rgba(184,137,58,0.22)" }}>
+              <Sparkles size={26} style={gold} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Ready to Get Started?</h2>
-            <p className="text-gray-500 text-sm mb-6">Experience the future of certificate verification</p>
+            <h2 className="text-2xl font-normal mb-2" style={{ fontFamily: "'Playfair Display', serif", color: "#1e1a14" }}>
+              Ready to Get <em className="italic" style={gold}>Started?</em>
+            </h2>
+            <p className="text-sm font-light mb-6" style={{ color: "#7a6d5e" }}>
+              Experience the future of certificate verification
+            </p>
             <div className="flex gap-3 justify-center flex-wrap">
               <Link href="/verify">
-                <button className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-sm font-semibold shadow-[0_0_25px_rgba(99,102,241,0.25)] hover:shadow-[0_0_35px_rgba(99,102,241,0.4)] hover:-translate-y-[1px] transition-all duration-300">
+                <button className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium text-white transition-all duration-300 hover:-translate-y-[2px]"
+                  style={{ background: "linear-gradient(135deg, #c9a24a, #b8893a)", boxShadow: "0 4px 20px rgba(184,137,58,0.3)" }}>
                   Verify a Certificate
-                  <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                 </button>
               </Link>
               <Link href="/about">
-                <button className="px-6 py-3 rounded-xl border border-white/[0.08] bg-white/[0.02] text-gray-300 text-sm hover:bg-white/[0.06] hover:border-white/[0.15] transition-all duration-200">
+                <button className="px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200"
+                  style={{ border: "1px solid rgba(184,137,58,0.22)", background: "rgba(255,255,255,0.5)", color: "#6b5f4e" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.9)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.5)"; }}>
                   Learn About Us
                 </button>
               </Link>
             </div>
           </div>
         </section>
+
       </div>
     </div>
   );

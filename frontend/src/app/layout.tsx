@@ -1,34 +1,3 @@
-// import "./globals.css";
-// import Navbar from "@/components/Navbar";
-
-// export const metadata = {
-//   title: "E-Certify",
-//   description: "Blockchain Certificate Verification"
-// };
-
-// export default function RootLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <html lang="en">
-//   <body className="min-h-screen bg-slate-950 text-white">
-//   <Navbar />
-//   <main className="pt-32 px-4">
-//     {children}
-//   </main>
-
-
-// </body>
-
-//     </html>
-//   );
-// }
-
-
-
-
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
@@ -45,10 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-slate-950 text-white">
+      <body className="min-h-screen" style={{ backgroundColor: "#f9f5ef", color: "#1e1a14" }}>
         <AuthProvider>
           <Navbar />
-          <main className="pt-32 px-4">
+          <main className="pt-20 px-4">
             {children}
           </main>
         </AuthProvider>

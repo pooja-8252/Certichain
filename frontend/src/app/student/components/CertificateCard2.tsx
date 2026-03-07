@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { type Cert } from "./CertificateList1";
+import { Copy, Check, FileText, ExternalLink, QrCode, ChevronUp, Lock, ShieldOff } from "lucide-react";
 
 function truncate(str: string, start = 6, end = 4): string {
   if (!str || str === "0x0000000000000000000000000000000000000000") return "";
@@ -22,37 +23,53 @@ function getStatus(cert: Cert): StatusType {
   return "Pending";
 }
 
-const STATUS_STYLES: Record<StatusType, {
-  badge: string;
-  bar: string;
-  dot: string;
-  border: string;
-  glow: string;
+const STATUS_CONFIG: Record<StatusType, {
+  label: string;
+  dotColor: string;
+  textColor: string;
+  badgeBg: string;
+  badgeBorder: string;
+  accentBar: string;
+  cardBorder: string;
+  cardHoverBorder: string;
+  pulse: boolean;
 }> = {
   Approved: {
-    badge:  "bg-emerald-500/15 border border-emerald-500/30 text-emerald-400",
-    bar:    "bg-gradient-to-r from-emerald-500 to-teal-500",
-    dot:    "bg-emerald-400 animate-pulse",
-    border: "border-emerald-500/20 hover:border-emerald-500/40",
-    glow:   "hover:shadow-emerald-500/5",
+    label: "Approved",
+    dotColor: "#16a34a",
+    textColor: "#16a34a",
+    badgeBg: "rgba(22,163,74,0.08)",
+    badgeBorder: "rgba(22,163,74,0.25)",
+    accentBar: "linear-gradient(180deg, #16a34a, #4ade80)",
+    cardBorder: "rgba(22,163,74,0.18)",
+    cardHoverBorder: "rgba(22,163,74,0.35)",
+    pulse: true,
   },
   Revoked: {
-    badge:  "bg-red-500/15 border border-red-500/30 text-red-400",
-    bar:    "bg-gradient-to-r from-red-500 to-rose-500",
-    dot:    "bg-red-400",
-    border: "border-red-500/20 hover:border-red-500/40",
-    glow:   "hover:shadow-red-500/5",
+    label: "Revoked",
+    dotColor: "#dc2626",
+    textColor: "#dc2626",
+    badgeBg: "rgba(220,38,38,0.07)",
+    badgeBorder: "rgba(220,38,38,0.22)",
+    accentBar: "linear-gradient(180deg, #dc2626, #f87171)",
+    cardBorder: "rgba(220,38,38,0.18)",
+    cardHoverBorder: "rgba(220,38,38,0.32)",
+    pulse: false,
   },
   Pending: {
-    badge:  "bg-amber-500/15 border border-amber-500/30 text-amber-400",
-    bar:    "bg-gradient-to-r from-amber-500 to-yellow-500",
-    dot:    "bg-amber-400 animate-pulse",
-    border: "border-white/15 hover:border-amber-500/30",
-    glow:   "hover:shadow-amber-500/5",
+    label: "Pending",
+    dotColor: "#d97706",
+    textColor: "#d97706",
+    badgeBg: "rgba(217,119,6,0.08)",
+    badgeBorder: "rgba(217,119,6,0.25)",
+    accentBar: "linear-gradient(180deg, #d97706, #fbbf24)",
+    cardBorder: "rgba(184,137,58,0.2)",
+    cardHoverBorder: "rgba(217,119,6,0.35)",
+    pulse: true,
   },
 };
 
-function CopyBtn({ text }: { text: string }) {
+function CopyBtn({ text, small = false }: { text: string; small?: boolean }) {
   const [done, setDone] = useState(false);
   function copy(e: React.MouseEvent) {
     e.preventDefault();
@@ -63,176 +80,184 @@ function CopyBtn({ text }: { text: string }) {
   }
   return (
     <button onClick={copy}
-      className="text-gray-600 hover:text-gray-300 transition-colors ml-1 shrink-0">
-      {done ? (
-        <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-        </svg>
-      ) : (
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-            d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
-        </svg>
-      )}
+      className="shrink-0 transition-all duration-150 rounded-md p-0.5 hover:bg-black/5"
+      style={{ color: done ? "#16a34a" : "#b5a795" }}>
+      {done
+        ? <Check size={small ? 11 : 13} />
+        : <Copy size={small ? 11 : 13} />}
     </button>
   );
 }
 
 export default function CertificateCard({ certificate }: { certificate: Cert }) {
   const status = getStatus(certificate);
-  const s = STATUS_STYLES[status];
+  const s = STATUS_CONFIG[status];
   const [showQR, setShowQR] = useState(false);
 
   const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://yourapp.vercel.app"}/verify?certId=${certificate.id}`;
 
   return (
-    <div className={`
-      rounded-2xl border bg-white/5 overflow-hidden
-      flex flex-col shadow-lg transition-all duration-200
-      hover:shadow-xl hover:-translate-y-[1px]
-      ${s.border} ${s.glow}
-    `}>
-      {/* Top color bar */}
-      <div className={`h-[3px] w-full ${s.bar}`} />
+    <div
+      className="rounded-2xl overflow-hidden flex flex-col transition-all duration-250 group"
+      style={{
+        background: "rgba(255,255,255,0.62)",
+        border: `1px solid ${s.cardBorder}`,
+        boxShadow: "0 2px 16px rgba(120,90,40,0.06)",
+      }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.border = `1px solid ${s.cardHoverBorder}`; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 6px 28px rgba(120,90,40,0.1)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.border = `1px solid ${s.cardBorder}`; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 16px rgba(120,90,40,0.06)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; }}
+    >
+      {/* ── Left accent bar + main content ── */}
+      <div className="flex flex-1">
 
-      <div className="p-5 flex flex-col gap-4 flex-1">
+        {/* Vertical accent bar */}
+        <div className="w-1 shrink-0 rounded-tl-2xl" style={{ background: s.accentBar }} />
 
-        {/* Header row */}
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-white">Certificate</span>
-            <span className="font-mono text-xs bg-white/8 border border-white/15 rounded-md px-2 py-0.5 text-gray-400">
-              #{String(certificate.id)}
-            </span>
-          </div>
-          <div className={`flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full ${s.badge}`}>
-            <div className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
-            {status}
-          </div>
-        </div>
+        <div className="flex-1 p-5 flex flex-col gap-4">
 
-        {/* Document */}
-        <div className="space-y-1.5">
-          <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Document</p>
-          {certificate.approved ? (
-            <a
-              href={`https://gateway.pinata.cloud/ipfs/${certificate.ipfsHash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 rounded-xl
-                         bg-emerald-500/10 border border-emerald-500/20
-                         text-emerald-400 text-xs font-medium
-                         hover:bg-emerald-500/15 transition-all group"
-            >
-              <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-              </svg>
-              View Document
-              <svg className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-60 transition-opacity"
-                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-              </svg>
-            </a>
-          ) : (
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs
-              ${status === "Revoked"
-                ? "bg-red-500/10 border border-red-500/20 text-red-400"
-                : "bg-amber-500/10 border border-amber-500/20 text-amber-400"
-              }`}>
-              <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                  d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-              </svg>
-              {status === "Revoked" ? "Access revoked" : "Locked until approved"}
+          {/* ── Card header ── */}
+          <div className="flex items-start justify-between gap-2">
+            {/* Certificate ID — stamp style */}
+            <div>
+              <p className="text-[9px] tracking-[0.2em] uppercase font-light mb-0.5" style={{ color: "#b5a795" }}>
+                Certificate
+              </p>
+              <p className="font-bold leading-none" style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", color: "#1e1a14" }}>
+                #{String(certificate.id).padStart(3, "0")}
+              </p>
             </div>
-          )}
-        </div>
 
-        {/* Student */}
-        <div className="space-y-1.5">
-          <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Student</p>
-          <div className="flex items-center gap-1">
-            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-500/30 to-blue-500/30
-                            border border-cyan-500/20 flex items-center justify-center shrink-0">
-              <div className="w-1.5 h-1.5 rounded-full bg-cyan-400/60" />
+            {/* Status badge */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[11px] font-medium"
+              style={{ background: s.badgeBg, border: `1px solid ${s.badgeBorder}`, color: s.textColor }}>
+              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s.pulse ? "animate-pulse" : ""}`}
+                style={{ background: s.dotColor }} />
+              {s.label}
             </div>
-            <span className="font-mono text-xs text-gray-300">
-              {truncate(certificate.student, 8, 6)}
-            </span>
-            {certificate.student && <CopyBtn text={certificate.student} />}
           </div>
-        </div>
 
-        {/* Institute */}
-        <div className="space-y-1.5">
-          <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Institute</p>
-          {isZero(certificate.institute) ? (
-            <span className="text-xs text-gray-600 italic">Not yet assigned</span>
-          ) : (
-            <div className="flex items-center gap-1">
-              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-purple-500/30 to-indigo-500/30
-                              border border-purple-500/20 flex items-center justify-center shrink-0">
-                <div className="w-1.5 h-1.5 rounded-full bg-purple-400/60" />
-              </div>
-              <span className="font-mono text-xs text-gray-300">
-                {truncate(certificate.institute, 8, 6)}
-              </span>
-              <CopyBtn text={certificate.institute} />
-            </div>
-          )}
-        </div>
+          {/* ── Divider ── */}
+          <div className="h-px" style={{ background: "linear-gradient(90deg, rgba(184,137,58,0.2), transparent)" }} />
 
-        {/* Footer */}
-        <div className="pt-3 border-t border-white/8 flex items-center justify-between">
-          <p className="text-[10px] text-gray-600">Use ID to verify on Verify page</p>
-          <div className="flex items-center gap-1.5 font-mono text-xs text-gray-400">
-            <span>ID:</span>
-            <span className="text-white font-semibold">#{certificate.id}</span>
-            <CopyBtn text={String(certificate.id)} />
-          </div>
-        </div>
-
-        {/* QR Code toggle — only for approved certs */}
-        {certificate.approved && !certificate.revoked && (
-          <div className="pt-1">
-            <button
-              onClick={() => setShowQR(!showQR)}
-              className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border transition-all duration-200 ${
-                showQR
-                  ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
-                  : "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10"
-              }`}
-            >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-                  d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
-              </svg>
-              {showQR ? "Hide QR Code" : "Show QR Code"}
-            </button>
-
-            {showQR && (
-              <div className="mt-3 flex flex-col items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
-                <div className="p-3 bg-white rounded-xl">
-                  <QRCodeSVG
-                    value={verifyUrl}
-                    size={140}
-                    bgColor="#ffffff"
-                    fgColor="#000000"
-                    level="M"
-                  />
-                </div>
-                <div className="text-center">
-                  <p className="text-[11px] text-gray-400">Scan to verify certificate</p>
-                  <p className="text-[10px] text-gray-600 mt-0.5 font-mono">Certificate #{String(certificate.id)}</p>
-                </div>
+          {/* ── Document row ── */}
+          <div className="space-y-1.5">
+            <p className="text-[9px] tracking-[0.2em] uppercase font-medium" style={{ color: "#b5a795" }}>
+              Document
+            </p>
+            {certificate.approved && !certificate.revoked ? (
+              <a href={`https://gateway.pinata.cloud/ipfs/${certificate.ipfsHash}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-medium transition-all"
+                style={{ background: "rgba(22,163,74,0.07)", border: "1px solid rgba(22,163,74,0.2)", color: "#16a34a" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(22,163,74,0.12)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(22,163,74,0.07)"; }}
+              >
+                <FileText size={13} />
+                <span className="flex-1">View Document</span>
+                <ExternalLink size={11} style={{ color: "rgba(22,163,74,0.5)" }} />
+              </a>
+            ) : (
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs"
+                style={{
+                  background: status === "Revoked" ? "rgba(220,38,38,0.06)" : "rgba(217,119,6,0.06)",
+                  border: `1px solid ${status === "Revoked" ? "rgba(220,38,38,0.18)" : "rgba(217,119,6,0.18)"}`,
+                  color: status === "Revoked" ? "#dc2626" : "#d97706",
+                }}>
+                {status === "Revoked" ? <ShieldOff size={13} /> : <Lock size={13} />}
+                <span>{status === "Revoked" ? "Access revoked" : "Locked until approved"}</span>
               </div>
             )}
           </div>
-        )}
 
+          {/* ── Student row ── */}
+          <div className="space-y-1">
+            <p className="text-[9px] tracking-[0.2em] uppercase font-medium" style={{ color: "#b5a795" }}>Student</p>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full shrink-0"
+                style={{ background: "linear-gradient(135deg, rgba(184,137,58,0.3), rgba(201,162,74,0.15))", border: "1px solid rgba(184,137,58,0.3)" }} />
+              <span className="font-mono text-xs flex-1 truncate" style={{ color: "#4a3f30" }}>
+                {truncate(certificate.student, 8, 6)}
+              </span>
+              {certificate.student && <CopyBtn text={certificate.student} small />}
+            </div>
+          </div>
+
+          {/* ── Institute row ── */}
+          <div className="space-y-1">
+            <p className="text-[9px] tracking-[0.2em] uppercase font-medium" style={{ color: "#b5a795" }}>Institute</p>
+            {isZero(certificate.institute) ? (
+              <p className="text-xs font-light italic" style={{ color: "#b5a795" }}>Not yet assigned</p>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full shrink-0"
+                  style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.25), rgba(139,92,246,0.1))", border: "1px solid rgba(99,102,241,0.25)" }} />
+                <span className="font-mono text-xs flex-1 truncate" style={{ color: "#4a3f30" }}>
+                  {truncate(certificate.institute, 8, 6)}
+                </span>
+                <CopyBtn text={certificate.institute} small />
+              </div>
+            )}
+          </div>
+
+          {/* ── Footer ── */}
+          <div className="mt-auto pt-3 flex items-center justify-between"
+            style={{ borderTop: "1px solid rgba(184,137,58,0.1)" }}>
+            <p className="text-[10px] font-light" style={{ color: "#b5a795" }}>
+              Use ID to verify
+            </p>
+            <div className="flex items-center gap-1.5">
+              <span className="font-mono text-xs font-semibold" style={{ color: "#1e1a14" }}>
+                #{certificate.id}
+              </span>
+              <CopyBtn text={String(certificate.id)} small />
+            </div>
+          </div>
+
+        </div>
       </div>
+
+      {/* ── QR section (approved only) ── */}
+      {certificate.approved && !certificate.revoked && (
+        <>
+          <button
+            onClick={() => setShowQR(!showQR)}
+            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-medium transition-all"
+            style={{
+              borderTop: "1px solid rgba(184,137,58,0.1)",
+              background: showQR ? "rgba(184,137,58,0.06)" : "rgba(255,255,255,0.3)",
+              color: showQR ? "#b8893a" : "#9a8a78",
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(184,137,58,0.08)"; (e.currentTarget as HTMLButtonElement).style.color = "#b8893a"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = showQR ? "rgba(184,137,58,0.06)" : "rgba(255,255,255,0.3)"; (e.currentTarget as HTMLButtonElement).style.color = showQR ? "#b8893a" : "#9a8a78"; }}
+          >
+            {showQR ? <ChevronUp size={13} /> : <QrCode size={13} />}
+            {showQR ? "Hide QR" : "Show QR Code"}
+          </button>
+
+          {showQR && (
+            <div className="flex flex-col items-center gap-3 px-5 py-5"
+              style={{ borderTop: "1px solid rgba(184,137,58,0.1)", background: "rgba(255,255,255,0.4)" }}>
+              {/* QR in parchment frame */}
+              <div className="p-3 rounded-2xl"
+                style={{ background: "#fefcf7", border: "2px solid rgba(184,137,58,0.2)", boxShadow: "0 4px 16px rgba(120,90,40,0.1)" }}>
+                <QRCodeSVG
+                  value={verifyUrl}
+                  size={130}
+                  bgColor="#fefcf7"
+                  fgColor="#1e1a14"
+                  level="M"
+                />
+              </div>
+              <div className="text-center">
+                <p className="text-[11px] font-medium" style={{ color: "#7a6d5e" }}>Scan to verify</p>
+                <p className="text-[10px] font-mono mt-0.5" style={{ color: "#b5a795" }}>
+                  Certificate #{String(certificate.id).padStart(3, "0")}
+                </p>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

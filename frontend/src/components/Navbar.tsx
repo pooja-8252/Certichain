@@ -1,161 +1,9 @@
-// 'use client';
-
-// import React, { useState } from 'react';
-// import Link from 'next/link';
-// import { usePathname, useRouter } from 'next/navigation';
-// import { Shield, Menu, X, LogOut, ArrowRight } from 'lucide-react';
-// import AuthModal from "@/components/AuthModal";
-// import { useAuth } from '@/lib/contexts/AuthContext';
-
-// export default function Navbar() {
-//   const pathname = usePathname();
-//   const router = useRouter();
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [showAuth, setShowAuth] = useState(false);
-  
-//   // Use Auth Context instead of local state
-//   const { isLoggedIn, userType, logout } = useAuth();
-
-//   const publicLinks = [
-//     { name: 'Home', href: '/' },
-//     { name: 'Verify', href: '/verify' },
-//     { name: 'About', href: '/about' },
-//   ];
-
-//   const authLinks = [
-//     { name: 'Dashboard', href: '/student', show: isLoggedIn && userType === 'student' },
-//     { name: 'Dashboard', href: '/institute', show: isLoggedIn && userType === 'institute' },
-//   ];
-
-//   const visibleLinks = [...publicLinks, ...authLinks.filter(l => l.show)];
-
-//   const handleLogout = () => {
-//     logout();
-//     router.push('/');
-//   };
-
-//   return (
-//     <>
-//       <nav className="sticky top-0 z-50 bg-[#080c14]/80 backdrop-blur-xl border-b border-white/[0.05]">
-//         <div className="max-w-6xl mx-auto px-6">
-//           <div className="flex items-center justify-between h-16">
-
-//             {/* Logo */}
-//             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-//               <div className="relative">
-//                 <div className="absolute inset-0 bg-cyan-400/20 rounded-lg blur-md group-hover:bg-cyan-400/30 transition-all duration-300" />
-//                 <div className="relative p-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10">
-//                   <Shield size={17} className="text-cyan-400" />
-//                 </div>
-//               </div>
-//               <span className="font-bold text-[17px] tracking-tight">
-//                 <span className="text-white">E-</span>
-//                 <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Certify</span>
-//               </span>
-//             </Link>
-
-//             {/* Desktop Nav */}
-//             <div className="hidden md:flex items-center gap-7">
-//               {visibleLinks.map(({ name, href }) => {
-//                 const isActive = pathname === href;
-//                 return (
-//                   <Link key={name} href={href}
-//                     className={`relative text-[13px] font-medium transition-all duration-200 group ${
-//                       isActive ? 'text-white' : 'text-gray-500 hover:text-gray-200'}`}>
-//                     {name}
-//                     <span className={`absolute -bottom-0.5 left-0 h-px bg-gradient-to-r from-cyan-400 to-blue-400 transition-all duration-300 ${
-//                       isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-//                   </Link>
-//                 );
-//               })}
-//             </div>
-
-//             {/* Desktop Auth */}
-//             <div className="hidden md:flex items-center gap-4 shrink-0">
-//               {isLoggedIn ? (
-//                 <>
-//                   <div className="flex items-center gap-2">
-//                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-//                     <span className="text-[11px] text-gray-500 tracking-widest uppercase">{userType}</span>
-//                   </div>
-//                   <button onClick={handleLogout}
-//                     className="flex items-center gap-1.5 text-[13px] text-red-400 hover:text-red-300 transition-colors duration-200">
-//                     <LogOut size={13} /> Logout
-//                   </button>
-//                 </>
-//               ) : (
-//                 <>
-//                   <button onClick={() => setShowAuth(true)}
-//                     className="text-[13px] font-medium text-gray-400 hover:text-white transition-colors duration-200">
-//                     Login
-//                   </button>
-
-//                   <button onClick={() => setShowAuth(true)}
-//                     className="group flex items-center gap-2 px-4 py-1.5 rounded-lg border border-white/15 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/25 text-white text-[13px] font-semibold transition-all duration-200">
-//                     Get Started
-//                     <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform duration-200" />
-//                   </button>
-//                 </>
-//               )}
-//             </div>
-
-//             {/* Mobile Toggle */}
-//             <button onClick={() => setIsOpen(!isOpen)}
-//               className="md:hidden p-2 rounded-xl border border-white/[0.06] bg-white/[0.02] text-gray-400 hover:text-white transition-all duration-200">
-//               {isOpen ? <X size={17} /> : <Menu size={17} />}
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Mobile Menu */}
-//         {isOpen && (
-//           <div className="md:hidden border-t border-white/[0.05] px-6 py-4 space-y-1">
-//             {visibleLinks.map(({ name, href }) => {
-//               const isActive = pathname === href;
-//               return (
-//                 <Link key={name} href={href} onClick={() => setIsOpen(false)}
-//                   className={`block px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
-//                     isActive ? 'text-white bg-white/[0.04]' : 'text-gray-500 hover:text-gray-200 hover:bg-white/[0.02]'}`}>
-//                   {name}
-//                 </Link>
-//               );
-//             })}
-//             <div className="pt-2 flex flex-col gap-2">
-//               {isLoggedIn ? (
-//                 <button onClick={handleLogout}
-//                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-500/15 bg-red-500/5 text-red-400 text-sm">
-//                   <LogOut size={14} /> Logout
-//                 </button>
-//               ) : (
-//                 <>
-//                   <button onClick={() => { setShowAuth(true); setIsOpen(false); }}
-//                     className="w-full py-2.5 rounded-xl border border-white/10 text-gray-300 text-sm hover:bg-white/[0.04] transition-all">
-//                     Login
-//                   </button>
-//                   <button onClick={() => { setShowAuth(true); setIsOpen(false); }}
-//                     className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-sm font-semibold">
-//                     Get Started <ArrowRight size={13} />
-//                   </button>
-//                 </>
-//               )}
-//             </div>
-//           </div>
-//         )}
-//       </nav>
-
-//       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
-//     </>
-//   );
-// }
-
-
-
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Menu, X, LogOut, ArrowRight } from 'lucide-react';
+import { Shield, Menu, X, LogOut, ArrowRight, ChevronDown } from 'lucide-react';
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from '@/lib/contexts/AuthContext';
 
@@ -164,13 +12,24 @@ export default function Navbar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const { isLoggedIn, userType, isAdmin, logout } = useAuth();
 
+  // Dynamic scroll shadow
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => { setIsOpen(false); }, [pathname]);
+
   const publicLinks = [
-    { name: 'Home', href: '/' },
+    { name: 'Home',   href: '/' },
     { name: 'Verify', href: '/verify' },
-    { name: 'About', href: '/about' },
+    { name: 'About',  href: '/about' },
   ];
 
   const authLinks = [
@@ -188,83 +47,239 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-[#080c14]/80 backdrop-blur-xl border-b border-white/[0.05]">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap');
+        .nav-font   { font-family: 'Outfit', sans-serif; }
+        .logo-font  { font-family: 'Playfair Display', serif; }
 
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-              <div className="relative">
-                <div className="absolute inset-0 bg-cyan-400/20 rounded-lg blur-md group-hover:bg-cyan-400/30 transition-all duration-300" />
-                <div className="relative p-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10">
-                  <Shield size={17} className="text-cyan-400" />
-                </div>
+        .navbar {
+          background: rgba(249, 245, 239, 0.82);
+          border-bottom: 1px solid rgba(184,137,58,0.13);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          transition: box-shadow 0.3s ease, background 0.3s ease;
+        }
+        .navbar.scrolled {
+          background: rgba(249, 245, 239, 0.95);
+          box-shadow: 0 4px 32px rgba(120,90,40,0.08);
+        }
+
+        /* Active nav link underline */
+        .nav-link-active::after {
+          content: '';
+          position: absolute;
+          bottom: -2px; left: 0; right: 0;
+          height: 1.5px;
+          background: linear-gradient(90deg, #b8893a, #c9a24a);
+          border-radius: 2px;
+        }
+        .nav-link-hover::after {
+          content: '';
+          position: absolute;
+          bottom: -2px; left: 0; right: 0;
+          height: 1.5px;
+          background: linear-gradient(90deg, #b8893a, #c9a24a);
+          border-radius: 2px;
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.25s ease;
+        }
+        .nav-link-hover:hover::after { transform: scaleX(1); }
+
+        /* Mobile menu */
+        .mobile-menu {
+          border-top: 1px solid rgba(184,137,58,0.12);
+          background: rgba(252,249,244,0.98);
+          backdrop-filter: blur(16px);
+          animation: slideDown 0.2s ease;
+        }
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Btn styles */
+        .btn-login {
+          color: #7a6d5e;
+          transition: color 0.2s ease;
+        }
+        .btn-login:hover { color: #1e1a14; }
+
+        .btn-getstarted {
+          background: linear-gradient(135deg, #c9a24a 0%, #b8893a 100%);
+          color: #fff;
+          box-shadow: 0 2px 12px rgba(184,137,58,0.28);
+          transition: all 0.25s ease;
+        }
+        .btn-getstarted:hover {
+          box-shadow: 0 4px 20px rgba(184,137,58,0.42);
+          transform: translateY(-1px);
+        }
+
+        .btn-logout {
+          color: #b45309;
+          transition: color 0.2s ease;
+          display: flex; align-items: center; gap: 5px;
+        }
+        .btn-logout:hover { color: #92400e; }
+
+        /* Role badge */
+        .role-badge {
+          background: rgba(184,137,58,0.08);
+          border: 1px solid rgba(184,137,58,0.2);
+          border-radius: 999px;
+          padding: 2px 10px;
+          display: flex; align-items: center; gap: 6px;
+        }
+        .role-dot {
+          width: 6px; height: 6px;
+          border-radius: 50%;
+          background: #b8893a;
+          animation: rolepulse 2s ease-in-out infinite;
+        }
+        @keyframes rolepulse {
+          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(184,137,58,0.4); }
+          50%       { opacity: 0.8; box-shadow: 0 0 0 4px rgba(184,137,58,0); }
+        }
+
+        /* Admin special badge */
+        .admin-badge {
+          background: rgba(184,137,58,0.1);
+          border: 1px solid rgba(184,137,58,0.25);
+          border-radius: 999px;
+          padding: 2px 10px;
+          display: flex; align-items: center; gap: 5px;
+          color: #b8893a;
+          font-size: 11px;
+          font-weight: 500;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+
+        /* Mobile link */
+        .mobile-link {
+          display: flex; align-items: center; gap: 8px;
+          padding: 10px 14px;
+          border-radius: 12px;
+          font-size: 14px;
+          font-weight: 400;
+          color: #6b5f4e;
+          transition: all 0.2s ease;
+        }
+        .mobile-link:hover {
+          background: rgba(184,137,58,0.07);
+          color: #1e1a14;
+        }
+        .mobile-link.active {
+          background: rgba(184,137,58,0.1);
+          color: #b8893a;
+          font-weight: 500;
+        }
+        .mobile-link.admin-link { color: #b8893a; }
+        .mobile-link.admin-link:hover { background: rgba(184,137,58,0.1); }
+
+        /* Mobile toggle */
+        .mobile-toggle {
+          background: rgba(255,255,255,0.6);
+          border: 1px solid rgba(184,137,58,0.18);
+          color: #7a6d5e;
+          transition: all 0.2s ease;
+        }
+        .mobile-toggle:hover {
+          background: rgba(255,255,255,0.9);
+          color: #1e1a14;
+          border-color: rgba(184,137,58,0.35);
+        }
+      `}</style>
+
+      <nav className={`nav-font navbar sticky top-0 z-50 ${scrolled ? 'scrolled' : ''}`}>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center justify-between h-[60px]">
+
+            {/* ── Logo ── */}
+            <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+              {/* Icon */}
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center relative"
+                style={{ background: "rgba(184,137,58,0.1)", border: "1px solid rgba(184,137,58,0.22)" }}
+              >
+                <div
+                  className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: "rgba(184,137,58,0.15)" }}
+                />
+                <Shield size={15} style={{ color: "#b8893a" }} />
               </div>
-              <span className="font-bold text-[17px] tracking-tight">
-                <span className="text-white">E-</span>
-                <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Certify</span>
+
+              {/* Wordmark */}
+              <span className="logo-font font-normal text-[18px] tracking-wide" style={{ color: "#1e1a14" }}>
+                E&#8209;<em className="font-semibold italic" style={{ color: "#b8893a" }}>Certify</em>
               </span>
             </Link>
 
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-7">
+            {/* ── Desktop Nav links ── */}
+            <div className="hidden md:flex items-center gap-8">
               {visibleLinks.map(({ name, href }) => {
                 const isActive = pathname === href;
-                // Special style for Admin link
-                if (href === '/admin') {
-                  return (
-                    <Link key="admin" href="/admin"
-                      className={`relative text-[13px] font-medium transition-all duration-200 group ${
-                        isActive ? 'text-cyan-400' : 'text-cyan-500/70 hover:text-cyan-400'
-                      }`}>
-                      <span className="flex items-center gap-1">
-                        <Shield size={12} />
-                        Admin
-                      </span>
-                      <span className={`absolute -bottom-0.5 left-0 h-px bg-gradient-to-r from-cyan-400 to-blue-400 transition-all duration-300 ${
-                        isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-                    </Link>
-                  );
-                }
+                const isAdminLink = href === '/admin';
+
                 return (
-                  <Link key={name + href} href={href}
-                    className={`relative text-[13px] font-medium transition-all duration-200 group ${
-                      isActive ? 'text-white' : 'text-gray-500 hover:text-gray-200'}`}>
-                    {name}
-                    <span className={`absolute -bottom-0.5 left-0 h-px bg-gradient-to-r from-cyan-400 to-blue-400 transition-all duration-300 ${
-                      isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                  <Link
+                    key={name + href}
+                    href={href}
+                    className={`relative text-[13px] font-medium transition-colors duration-200
+                      ${isAdminLink
+                        ? isActive ? 'nav-link-active' : 'nav-link-hover'
+                        : isActive ? 'nav-link-active' : 'nav-link-hover'
+                      }`}
+                    style={{
+                      color: isAdminLink
+                        ? isActive ? '#b8893a' : 'rgba(184,137,58,0.7)'
+                        : isActive ? '#1e1a14' : '#9a8a78',
+                    }}
+                  >
+                    {isAdminLink && (
+                      <span className="inline-flex items-center gap-1">
+                        <Shield size={11} />
+                        {name}
+                      </span>
+                    )}
+                    {!isAdminLink && name}
                   </Link>
                 );
               })}
             </div>
 
-            {/* Desktop Auth */}
-            <div className="hidden md:flex items-center gap-4 shrink-0">
+            {/* ── Desktop Auth ── */}
+            <div className="hidden md:flex items-center gap-3 shrink-0">
               {isLoggedIn ? (
                 <>
-                  <div className="flex items-center gap-2">
-                    <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${
-                      isAdmin ? 'bg-cyan-400' : 'bg-cyan-400'
-                    }`} />
-                    <span className={`text-[11px] tracking-widest uppercase ${
-                      isAdmin ? 'text-cyan-400' : 'text-gray-500'
-                    }`}>
-                      {isAdmin ? 'Admin' : userType}
+                  {/* Role badge */}
+                  <div className={isAdmin ? "admin-badge" : "role-badge"}>
+                    {!isAdmin && <span className="role-dot" />}
+                    {isAdmin && <Shield size={11} />}
+                    <span
+                      className="text-[11px] font-medium tracking-[0.13em] uppercase"
+                      style={{ color: isAdmin ? "#b8893a" : "#9a8a78" }}
+                    >
+                      {isAdmin ? "Admin" : userType}
                     </span>
                   </div>
-                  <button onClick={handleLogout}
-                    className="flex items-center gap-1.5 text-[13px] text-red-400 hover:text-red-300 transition-colors duration-200">
-                    <LogOut size={13} /> Logout
+
+                  {/* Logout */}
+                  <button onClick={handleLogout} className="btn-logout text-[13px] font-medium">
+                    <LogOut size={13} />
+                    Logout
                   </button>
                 </>
               ) : (
                 <>
-                  <button onClick={() => setShowAuth(true)}
-                    className="text-[13px] font-medium text-gray-400 hover:text-white transition-colors duration-200">
+                  <button onClick={() => setShowAuth(true)} className="btn-login text-[13px] font-medium">
                     Login
                   </button>
-                  <button onClick={() => setShowAuth(true)}
-                    className="group flex items-center gap-2 px-4 py-1.5 rounded-lg border border-white/15 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/25 text-white text-[13px] font-semibold transition-all duration-200">
+                  <button
+                    onClick={() => setShowAuth(true)}
+                    className="btn-getstarted group flex items-center gap-2 px-4 py-[7px] rounded-lg text-[13px] font-medium"
+                  >
                     Get Started
                     <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform duration-200" />
                   </button>
@@ -272,45 +287,81 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Mobile Toggle */}
-            <button onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-xl border border-white/[0.06] bg-white/[0.02] text-gray-400 hover:text-white transition-all duration-200">
+            {/* ── Mobile toggle ── */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden mobile-toggle p-2 rounded-xl"
+            >
               {isOpen ? <X size={17} /> : <Menu size={17} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* ── Mobile menu ── */}
         {isOpen && (
-          <div className="md:hidden border-t border-white/[0.05] px-6 py-4 space-y-1">
+          <div className="mobile-menu md:hidden px-5 py-3 space-y-0.5">
             {visibleLinks.map(({ name, href }) => {
               const isActive = pathname === href;
+              const isAdminLink = href === '/admin';
               return (
-                <Link key={name + href} href={href} onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
-                    href === '/admin'
-                      ? isActive ? 'text-cyan-400 bg-cyan-500/10' : 'text-cyan-500/70 hover:text-cyan-400 hover:bg-cyan-500/5'
-                      : isActive ? 'text-white bg-white/[0.04]' : 'text-gray-500 hover:text-gray-200 hover:bg-white/[0.02]'
-                  }`}>
-                  {href === '/admin' && <Shield size={13} />}
+                <Link
+                  key={name + href}
+                  href={href}
+                  className={`mobile-link ${isActive ? 'active' : ''} ${isAdminLink ? 'admin-link' : ''}`}
+                >
+                  {isAdminLink && <Shield size={13} />}
                   {name}
+                  {isActive && (
+                    <span
+                      className="ml-auto w-1.5 h-1.5 rounded-full"
+                      style={{ background: "#b8893a" }}
+                    />
+                  )}
                 </Link>
               );
             })}
-            <div className="pt-2 flex flex-col gap-2">
+
+            {/* Mobile auth */}
+            <div className="pt-3 mt-1 flex flex-col gap-2" style={{ borderTop: "1px solid rgba(184,137,58,0.1)" }}>
               {isLoggedIn ? (
-                <button onClick={handleLogout}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-500/15 bg-red-500/5 text-red-400 text-sm">
-                  <LogOut size={14} /> Logout
-                </button>
+                <div className="flex items-center justify-between px-2">
+                  <div className={isAdmin ? "admin-badge" : "role-badge"}>
+                    {!isAdmin && <span className="role-dot" />}
+                    {isAdmin && <Shield size={11} />}
+                    <span className="text-[11px] font-medium tracking-[0.13em] uppercase"
+                      style={{ color: isAdmin ? "#b8893a" : "#9a8a78" }}>
+                      {isAdmin ? "Admin" : userType}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium"
+                    style={{
+                      color: "#b45309",
+                      background: "rgba(180,83,9,0.06)",
+                      border: "1px solid rgba(180,83,9,0.15)"
+                    }}
+                  >
+                    <LogOut size={13} /> Logout
+                  </button>
+                </div>
               ) : (
                 <>
-                  <button onClick={() => { setShowAuth(true); setIsOpen(false); }}
-                    className="w-full py-2.5 rounded-xl border border-white/10 text-gray-300 text-sm hover:bg-white/[0.04] transition-all">
+                  <button
+                    onClick={() => { setShowAuth(true); setIsOpen(false); }}
+                    className="w-full py-2.5 rounded-xl text-sm font-medium transition-all"
+                    style={{
+                      border: "1px solid rgba(184,137,58,0.2)",
+                      background: "rgba(255,255,255,0.5)",
+                      color: "#6b5f4e"
+                    }}
+                  >
                     Login
                   </button>
-                  <button onClick={() => { setShowAuth(true); setIsOpen(false); }}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-sm font-semibold">
+                  <button
+                    onClick={() => { setShowAuth(true); setIsOpen(false); }}
+                    className="btn-getstarted w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium"
+                  >
                     Get Started <ArrowRight size={13} />
                   </button>
                 </>

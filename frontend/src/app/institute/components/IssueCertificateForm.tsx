@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { getCertificateContract } from "@/lib/contracts";
+import { Wallet, Upload, FileText, CheckCircle, AlertCircle, Loader2, RotateCcw, ExternalLink } from "lucide-react";
 
 type Stage = "idle" | "uploading" | "submitting" | "confirming" | "done" | "error";
 
@@ -20,6 +21,7 @@ export default function IssueCertificateForm({ walletConnected, onConnectWallet 
   const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const gold = "#b8893a";
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "/api";
 
   async function uploadToIPFS(f: File): Promise<string> {
@@ -33,30 +35,20 @@ export default function IssueCertificateForm({ walletConnected, onConnectWallet 
 
   async function handleSubmit() {
     if (!file || !studentAddress || !walletConnected) return;
-    setErrorMsg("");
-    setTxHash("");
-    setIpfsHash("");
-
+    setErrorMsg(""); setTxHash(""); setIpfsHash("");
     try {
       setStage("uploading");
       const hash = await uploadToIPFS(file);
       setIpfsHash(hash);
-
       setStage("submitting");
       const contract = await getCertificateContract();
-
       try {
         await contract.issueCertificate.staticCall(studentAddress, hash);
       } catch (staticErr: any) {
-        throw new Error(
-          staticErr?.reason || staticErr?.error?.message || staticErr?.message ||
-          "Contract will revert — check the student address is registered on-chain"
-        );
+        throw new Error(staticErr?.reason || staticErr?.error?.message || staticErr?.message || "Contract will revert — check the student address is registered on-chain");
       }
-
       const tx = await contract.issueCertificate(studentAddress, hash);
       setTxHash(tx.hash);
-
       setStage("confirming");
       await tx.wait();
       setStage("done");
@@ -67,55 +59,43 @@ export default function IssueCertificateForm({ walletConnected, onConnectWallet 
   }
 
   function reset() {
-    setStage("idle");
-    setFile(null);
-    setStudentAddress("");
-    setErrorMsg("");
-    setTxHash("");
-    setIpfsHash("");
+    setStage("idle"); setFile(null); setStudentAddress("");
+    setErrorMsg(""); setTxHash(""); setIpfsHash("");
   }
 
   function handleDrop(e: React.DragEvent) {
-    e.preventDefault();
-    setDragOver(false);
+    e.preventDefault(); setDragOver(false);
     const dropped = e.dataTransfer.files[0];
     if (dropped?.type === "application/pdf") setFile(dropped);
   }
 
   const isLoading = ["uploading", "submitting", "confirming"].includes(stage);
+  const progressStep = stage === "uploading" ? 1 : stage === "submitting" ? 2 : stage === "confirming" ? 3 : stage === "done" ? 4 : 0;
 
-  const progressStep =
-    stage === "uploading"  ? 1 :
-    stage === "submitting" ? 2 :
-    stage === "confirming" ? 3 :
-    stage === "done"       ? 4 : 0;
+  const STEPS = ["Upload to IPFS", "Submit TX", "Confirm"];
 
-  // ── Wallet not connected ──────────────────────────────────────────────────
+  /* ── Wallet not connected ── */
   if (!walletConnected) {
     return (
       <div className="max-w-2xl">
-        <div className="rounded-3xl border border-white/20 bg-white/5 p-14
-                        flex flex-col items-center gap-5 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-cyan-500/15 border border-cyan-500/30
-                          flex items-center justify-center">
-            <svg className="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                d="M21 12a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18-3a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6m18 0V4.5" />
-            </svg>
+        <div className="rounded-2xl p-14 flex flex-col items-center gap-5 text-center"
+          style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(184,137,58,0.18)", boxShadow: "0 8px 40px rgba(120,90,40,0.07)" }}>
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
+            style={{ background: "rgba(184,137,58,0.1)", border: "1px solid rgba(184,137,58,0.22)" }}>
+            <Wallet size={28} style={{ color: gold }} />
           </div>
           <div>
-            <p className="text-white font-semibold text-lg mb-1">Wallet Required</p>
-            <p className="text-gray-400 text-sm">
+            <p className="font-normal text-lg mb-1" style={{ fontFamily: "'Playfair Display', serif", color: "#1e1a14" }}>
+              Wallet <em className="italic" style={{ color: gold }}>Required</em>
+            </p>
+            <p className="text-sm font-light" style={{ color: "#7a6d5e" }}>
               Connect your MetaMask wallet to issue certificates on-chain.
             </p>
           </div>
-          <button
-            onClick={onConnectWallet}
-            className="px-8 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500
-                       text-white font-semibold text-sm shadow-lg shadow-cyan-500/25
-                       hover:from-cyan-400 hover:to-blue-400 transition-all"
-          >
-            Connect MetaMask
+          <button onClick={onConnectWallet}
+            className="flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-medium transition-all hover:-translate-y-[1px]"
+            style={{ background: "linear-gradient(135deg,#c9a24a,#b8893a)", color: "#fff", boxShadow: "0 4px 20px rgba(184,137,58,0.3)" }}>
+            <Wallet size={14} /> Connect MetaMask
           </button>
         </div>
       </div>
@@ -123,89 +103,86 @@ export default function IssueCertificateForm({ walletConnected, onConnectWallet 
   }
 
   return (
-    //  <div className="max-w-xl mx-auto space-y-5">
-    <div className="max-w-xl mx-auto space-y-5 px-4 sm:px-0">
+    <div className="max-w-xl mx-auto space-y-5 px-0">
 
-      {/* Progress steps */}
+      {/* ── Progress steps ── */}
       {isLoading && (
-        <div className="flex items-center gap-3 px-5 py-4 rounded-2xl
-                        bg-cyan-500/8 border border-cyan-500/20">
-          {["Upload to IPFS", "Submit TX", "Confirm"].map((label, i) => (
+        <div className="flex items-center gap-2 px-5 py-4 rounded-2xl flex-wrap"
+          style={{ background: "rgba(184,137,58,0.07)", border: "1px solid rgba(184,137,58,0.18)" }}>
+          {STEPS.map((label, i) => (
             <div key={i} className="flex items-center gap-2">
-              <div className={`
-                w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
-                transition-all duration-300
-                ${progressStep > i
-                  ? "bg-cyan-500 text-white"
-                  : progressStep === i + 1
-                  ? "bg-cyan-500/20 border-2 border-cyan-400 text-cyan-400 animate-pulse"
-                  : "bg-white/10 border border-white/20 text-gray-500"
-                }
-              `}>
+              <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300"
+                style={progressStep > i ? {
+                  background: "linear-gradient(135deg,#c9a24a,#b8893a)", color: "#fff",
+                } : progressStep === i + 1 ? {
+                  background: "rgba(184,137,58,0.12)", border: `2px solid ${gold}`, color: gold,
+                } : {
+                  background: "rgba(255,255,255,0.4)", border: "1px solid rgba(184,137,58,0.2)", color: "#b5a795",
+                }}>
                 {progressStep > i ? "✓" : i + 1}
               </div>
-              <span className={`text-sm font-medium ${progressStep >= i + 1 ? "text-white" : "text-gray-500"}`}>
+              <span className="text-xs font-medium" style={{ color: progressStep >= i + 1 ? "#1e1a14" : "#b5a795" }}>
                 {label}
               </span>
-              {i < 2 && (
-                <div className={`w-8 h-0.5 rounded mx-1 ${progressStep > i + 1 ? "bg-cyan-500" : "bg-white/15"}`} />
-              )}
+              {i < 2 && <div className="w-6 h-px mx-1" style={{ background: progressStep > i + 1 ? gold : "rgba(184,137,58,0.2)" }} />}
             </div>
           ))}
         </div>
       )}
 
-      {/* Main form card */}
-      <div className="rounded-3xl border border-white/20 bg-white/5 p-8 space-y-6
-                      shadow-xl shadow-black/30">
+      {/* ── Main form card ── */}
+      <div className="rounded-2xl p-7 space-y-6"
+        style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(184,137,58,0.18)", boxShadow: "0 8px 40px rgba(120,90,40,0.07)" }}>
 
         {/* Success */}
         {stage === "done" && (
-          <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-5 space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-emerald-500/25 border border-emerald-500/40
-                              flex items-center justify-center">
-                <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <p className="text-emerald-300 font-bold text-base">Certificate Issued Successfully!</p>
+          <div className="rounded-2xl overflow-hidden"
+            style={{ border: "1px solid rgba(22,163,74,0.22)" }}>
+            <div className="flex items-center gap-3 px-5 py-3"
+              style={{ background: "rgba(22,163,74,0.08)", borderBottom: "1px solid rgba(22,163,74,0.15)" }}>
+              <CheckCircle size={16} style={{ color: "#16a34a" }} />
+              <p className="text-sm font-medium" style={{ color: "#16a34a" }}>Certificate Issued Successfully!</p>
             </div>
-            {txHash && (
-              <div className="bg-black/20 rounded-xl p-3">
-                <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Transaction Hash</p>
-                <p className="text-xs font-mono text-gray-300 break-all">{txHash}</p>
-              </div>
-            )}
-            {ipfsHash && (
-              <div className="bg-black/20 rounded-xl p-3">
-                <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">IPFS Document</p>
-                <a href={`https://ipfs.io/ipfs/${ipfsHash}`} target="_blank" rel="noopener noreferrer"
-                  className="text-xs font-mono text-cyan-400 hover:text-cyan-300 break-all transition-colors">
-                  {ipfsHash}
-                </a>
-              </div>
-            )}
+            <div className="px-5 py-4 space-y-3" style={{ background: "rgba(255,255,255,0.5)" }}>
+              {txHash && (
+                <div className="space-y-1">
+                  <p className="text-[10px] tracking-[0.18em] uppercase font-medium" style={{ color: "#b5a795" }}>Transaction Hash</p>
+                  <p className="text-xs font-mono break-all" style={{ color: "#4a3f30" }}>{txHash}</p>
+                </div>
+              )}
+              {ipfsHash && (
+                <div className="space-y-1">
+                  <p className="text-[10px] tracking-[0.18em] uppercase font-medium" style={{ color: "#b5a795" }}>IPFS Document</p>
+                  <a href={`https://ipfs.io/ipfs/${ipfsHash}`} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs font-mono break-all transition-all"
+                    style={{ color: gold }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#c9a24a"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = gold; }}>
+                    {ipfsHash} <ExternalLink size={11} className="shrink-0" />
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
         {/* Error */}
         {stage === "error" && (
-          <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 flex gap-3">
-            <svg className="w-5 h-5 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-            </svg>
-            <div>
-              <p className="text-red-300 text-sm font-semibold mb-1">Transaction Failed</p>
-              <p className="text-red-400/80 text-xs leading-relaxed">{errorMsg}</p>
+          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(220,38,38,0.2)" }}>
+            <div className="flex items-center gap-2 px-5 py-3"
+              style={{ background: "rgba(220,38,38,0.07)", borderBottom: "1px solid rgba(220,38,38,0.15)" }}>
+              <AlertCircle size={14} style={{ color: "#dc2626" }} />
+              <span className="text-xs font-medium tracking-widest uppercase" style={{ color: "#dc2626" }}>Transaction Failed</span>
+            </div>
+            <div className="px-5 py-3" style={{ background: "rgba(255,255,255,0.5)" }}>
+              <p className="text-xs font-light leading-relaxed" style={{ color: "#7a6d5e" }}>{errorMsg}</p>
             </div>
           </div>
         )}
 
         {/* Student address */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-200">
+          <label className="block text-[11px] tracking-[0.16em] uppercase font-medium" style={{ color: "#7a6d5e" }}>
             Student Wallet Address
           </label>
           <input
@@ -214,18 +191,24 @@ export default function IssueCertificateForm({ walletConnected, onConnectWallet 
             value={studentAddress}
             onChange={(e) => setStudentAddress(e.target.value)}
             disabled={isLoading}
-            className="w-full px-4 py-3.5 rounded-xl
-                       bg-[#111827] border border-white/25
-                       text-white placeholder-gray-500 text-sm font-mono
-                       focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30
-                       disabled:opacity-50 transition-all"
+            className="w-full px-4 py-3.5 rounded-xl text-sm font-mono transition-all disabled:opacity-50"
+            style={{
+              background: "rgba(255,255,255,0.7)",
+              border: "1px solid rgba(184,137,58,0.2)",
+              color: "#1e1a14",
+              outline: "none",
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(184,137,58,0.5)"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(184,137,58,0.1)"; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(184,137,58,0.2)"; e.currentTarget.style.boxShadow = "none"; }}
           />
-          <p className="text-xs text-gray-500">Must be a registered student address on-chain</p>
+          <p className="text-[11px] font-light" style={{ color: "#b5a795" }}>
+            Must be a registered student address on-chain
+          </p>
         </div>
 
         {/* File upload */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-200">
+          <label className="block text-[11px] tracking-[0.16em] uppercase font-medium" style={{ color: "#7a6d5e" }}>
             Certificate PDF
           </label>
           <div
@@ -233,85 +216,85 @@ export default function IssueCertificateForm({ walletConnected, onConnectWallet 
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
             onClick={() => !isLoading && fileRef.current?.click()}
-            className={`
-              cursor-pointer rounded-2xl border-2 border-dashed p-10
-              flex flex-col items-center justify-center gap-3
-              transition-all duration-200
-              ${dragOver
-                ? "border-cyan-400 bg-cyan-500/10"
-                : file
-                ? "border-emerald-400/60 bg-emerald-500/8"
-                : "border-white/25 bg-[#111827] hover:border-cyan-400/60 hover:bg-cyan-500/5"
-              }
-              ${isLoading ? "opacity-40 pointer-events-none" : ""}
-            `}
+            className="cursor-pointer rounded-2xl border-2 border-dashed p-10 flex flex-col items-center justify-center gap-3 transition-all duration-200"
+            style={{
+              borderColor: dragOver ? gold
+                         : file    ? "rgba(22,163,74,0.4)"
+                         : "rgba(184,137,58,0.25)",
+              background: dragOver ? "rgba(184,137,58,0.07)"
+                        : file    ? "rgba(22,163,74,0.05)"
+                        : "rgba(255,255,255,0.4)",
+              opacity: isLoading ? 0.45 : 1,
+              pointerEvents: isLoading ? "none" : "auto",
+            }}
           >
             <input ref={fileRef} type="file" accept=".pdf" className="hidden"
               onChange={(e) => setFile(e.target.files?.[0] || null)} />
 
             {file ? (
               <>
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40
-                                flex items-center justify-center">
-                  <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                      d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                  </svg>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center"
+                  style={{ background: "rgba(22,163,74,0.1)", border: "1px solid rgba(22,163,74,0.25)" }}>
+                  <FileText size={22} style={{ color: "#16a34a" }} />
                 </div>
                 <div className="text-center">
-                  <p className="text-white font-semibold text-sm">{file.name}</p>
-                  <p className="text-gray-400 text-xs mt-1">{(file.size / 1024).toFixed(1)} KB · Click to change</p>
+                  <p className="text-sm font-medium" style={{ color: "#1e1a14" }}>{file.name}</p>
+                  <p className="text-xs font-light mt-1" style={{ color: "#9a8a78" }}>
+                    {(file.size / 1024).toFixed(1)} KB · Click to change
+                  </p>
                 </div>
               </>
             ) : (
               <>
-                <div className="w-12 h-12 rounded-xl bg-white/8 border border-white/15
-                                flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                      d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                  </svg>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center"
+                  style={{ background: "rgba(184,137,58,0.08)", border: "1px solid rgba(184,137,58,0.2)" }}>
+                  <Upload size={22} style={{ color: gold }} />
                 </div>
                 <div className="text-center">
-                  <p className="text-gray-300 font-medium text-sm">Drop PDF here or click to browse</p>
-                  <p className="text-gray-500 text-xs mt-1">PDF files only</p>
+                  <p className="text-sm font-medium" style={{ color: "#4a3f30" }}>
+                    Drop PDF here or click to browse
+                  </p>
+                  <p className="text-xs font-light mt-1" style={{ color: "#b5a795" }}>PDF files only</p>
                 </div>
               </>
             )}
           </div>
         </div>
 
-        {/* Submit */}
+        {/* Submit / Reset */}
         {stage === "done" ? (
           <button onClick={reset}
-            className="w-full h-12 rounded-xl bg-white/8 border border-white/20
-                       text-gray-300 text-sm font-semibold hover:bg-white/12 transition-all">
-            Issue Another Certificate
+            className="w-full h-12 rounded-xl flex items-center justify-center gap-2 text-sm font-medium transition-all hover:-translate-y-[1px]"
+            style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(184,137,58,0.22)", color: "#7a6d5e" }}>
+            <RotateCcw size={14} /> Issue Another Certificate
           </button>
         ) : (
           <button
             onClick={handleSubmit}
             disabled={!file || !studentAddress || isLoading}
-            className={`
-              w-full h-12 rounded-xl text-sm font-bold transition-all duration-200
-              flex items-center justify-center gap-2
-              ${!file || !studentAddress || isLoading
-                ? "bg-white/8 border border-white/15 text-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/30 hover:from-cyan-400 hover:to-blue-400"
-              }
-            `}
+            className="w-full h-12 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-all"
+            style={!file || !studentAddress || isLoading ? {
+              background: "rgba(184,137,58,0.07)",
+              border: "1px solid rgba(184,137,58,0.15)",
+              color: "#c9b99a",
+              cursor: "not-allowed",
+            } : {
+              background: "linear-gradient(135deg,#c9a24a,#b8893a)",
+              color: "#fff",
+              boxShadow: "0 4px 20px rgba(184,137,58,0.3)",
+              cursor: "pointer",
+            }}
           >
-            {isLoading && (
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            )}
+            {isLoading && <Loader2 size={15} className="animate-spin" />}
             {stage === "idle"       ? "Issue Certificate"
-            : stage === "uploading"  ? "Uploading to IPFS…"
-            : stage === "submitting" ? "Sending Transaction…"
-            : stage === "confirming" ? "Confirming on Chain…"
-            : stage === "error"      ? "Try Again"
-            : "Issue Certificate"}
+           : stage === "uploading"  ? "Uploading to IPFS…"
+           : stage === "submitting" ? "Sending Transaction…"
+           : stage === "confirming" ? "Confirming on Chain…"
+           : stage === "error"      ? "Try Again"
+           : "Issue Certificate"}
           </button>
         )}
+
       </div>
     </div>
   );

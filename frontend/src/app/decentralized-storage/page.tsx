@@ -5,132 +5,148 @@ import Link from 'next/link';
 
 export default function DecentralizedStorage() {
   const features = [
-    { icon: Database, title: "IPFS Integration", desc: "Distributed file storage across globally connected nodes." },
-    { icon: Lock, title: "Encrypted Storage", desc: "End-to-end encryption for every certificate stored." },
-    { icon: Server, title: "No Single Point of Failure", desc: "Data replicated across the entire IPFS network." },
-    { icon: Shield, title: "Immutable Records", desc: "Once stored on-chain, records cannot be altered." },
+    { icon: Database, title: "IPFS Integration",            desc: "Distributed file storage across globally connected nodes." },
+    { icon: Lock,     title: "Encrypted Storage",           desc: "End-to-end encryption for every certificate stored." },
+    { icon: Server,   title: "No Single Point of Failure",  desc: "Data replicated across the entire IPFS network." },
+    { icon: Shield,   title: "Immutable Records",           desc: "Once stored on-chain, records cannot be altered." },
   ];
 
   const techStack = [
-    { name: "IPFS", desc: "InterPlanetary File System", icon: "🌐", color: "border-cyan-500/20 hover:border-cyan-500/40" },
-    { name: "Pinata", desc: "IPFS pinning service", icon: "📌", color: "border-indigo-500/20 hover:border-indigo-500/40" },
-    { name: "Filecoin", desc: "Decentralized storage", icon: "💾", color: "border-blue-500/20 hover:border-blue-500/40" },
-    { name: "Arweave", desc: "Permanent data storage", icon: "♾️", color: "border-cyan-500/20 hover:border-cyan-500/40" },
+    { name: "IPFS",     desc: "InterPlanetary File System", icon: "🌐" },
+    { name: "Pinata",   desc: "IPFS pinning service",       icon: "📌" },
+    { name: "Filecoin", desc: "Decentralized storage",      icon: "💾" },
+    { name: "Arweave",  desc: "Permanent data storage",     icon: "♾️" },
   ];
 
   const steps = [
-    { step: "01", title: "Certificate Upload", desc: "Institution uploads certificate PDF/image to the platform." },
-    { step: "02", title: "Hash Generation", desc: "System generates a unique cryptographic hash (SHA-256)." },
-    { step: "03", title: "IPFS Storage", desc: "Certificate stored on IPFS with a unique Content ID." },
-    { step: "04", title: "Blockchain Record", desc: "Hash + IPFS CID permanently recorded on Ethereum." },
-    { step: "05", title: "Distributed Nodes", desc: "File replicated across IPFS nodes globally." },
+    { step: "01", title: "Certificate Upload",  desc: "Institution uploads certificate PDF/image to the platform." },
+    { step: "02", title: "Hash Generation",     desc: "System generates a unique cryptographic hash (SHA-256)." },
+    { step: "03", title: "IPFS Storage",        desc: "Certificate stored on IPFS with a unique Content ID." },
+    { step: "04", title: "Blockchain Record",   desc: "Hash + IPFS CID permanently recorded on Ethereum." },
+    { step: "05", title: "Distributed Nodes",   desc: "File replicated across IPFS nodes globally." },
   ];
 
-  return (
-    <div className="min-h-screen bg-[#080c14] text-white">
+  const gold = { color: "#b8893a" };
+  const goldBorder = "border border-[rgba(184,137,58,0.18)]";
+  const card = `rounded-2xl ${goldBorder} bg-white/50 hover:bg-white/80 hover:border-[rgba(184,137,58,0.35)] transition-all duration-300`;
 
-      {/* Ambient glow */}
+  return (
+    <div className="min-h-screen" style={{ background: "#f9f5ef", fontFamily: "'Outfit', sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap');`}</style>
+
+      {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-cyan-500/[0.05] rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-indigo-500/[0.05] rounded-full blur-[100px]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-[120px]" style={{ background: "rgba(184,137,58,0.07)" }} />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full blur-[100px]" style={{ background: "rgba(160,130,90,0.06)" }} />
       </div>
 
       <div className="relative max-w-5xl mx-auto px-6">
 
-        {/* Hero */}
-        <section className="pt-24 pb-16 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/5 text-cyan-400 text-[11px] tracking-[0.18em] uppercase font-medium mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+        {/* ── Hero ── */}
+        <section className="pt-20 pb-14 text-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border mb-8 text-[10px] font-medium tracking-[0.2em] uppercase"
+            style={{ borderColor: "rgba(184,137,58,0.25)", background: "rgba(184,137,58,0.07)", color: "#b8893a" }}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#b8893a" }} />
             IPFS · Decentralized · Immutable
           </div>
-          <div className="p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10 w-fit mx-auto mb-6">
-            <Database size={36} className="text-cyan-400" />
+
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            style={{ background: "rgba(184,137,58,0.1)", border: "1px solid rgba(184,137,58,0.22)" }}>
+            <Database size={30} style={gold} />
           </div>
-          <h1 className="text-5xl font-bold tracking-tight mb-4">
+
+          <h1 className="text-5xl font-normal leading-tight mb-4" style={{ fontFamily: "'Playfair Display', serif", color: "#1e1a14" }}>
             Decentralized{" "}
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Storage</span>
+            <em className="italic font-semibold" style={gold}>Storage</em>
           </h1>
-          <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">
+          <p className="max-w-xl mx-auto leading-relaxed text-[14px] font-light" style={{ color: "#6b5f4e" }}>
             Certificates stored securely on IPFS to prevent tampering. No central server means no single point of failure.
           </p>
         </section>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4 mb-16">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-white/[0.06]" />
-          <span className="text-[10px] text-gray-700 tracking-[0.2em] uppercase">How It Works</span>
-          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-white/[0.06]" />
+        {/* Section label helper */}
+        {["How It Works", "Key Features", "Technology Stack"].map((label, i) => null)}
+
+        {/* ── How It Works ── */}
+        <div className="flex items-center gap-4 mb-10">
+          <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(184,137,58,0.2))" }} />
+          <span className="text-[10px] tracking-[0.2em] uppercase font-light" style={{ color: "#b5a795" }}>How It Works</span>
+          <div className="flex-1 h-px" style={{ background: "linear-gradient(270deg, transparent, rgba(184,137,58,0.2))" }} />
         </div>
 
-        {/* Steps */}
-        <section className="pb-16 space-y-3">
+        <section className="pb-14 space-y-2.5">
           {steps.map(({ step, title, desc }) => (
-            <div key={step} className="group flex gap-5 p-5 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] hover:border-cyan-500/20 transition-all duration-300">
-              <div className="shrink-0 w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                <span className="text-[11px] font-bold text-cyan-400">{step}</span>
+            <div key={step} className={`${card} flex gap-5 p-5`}>
+              <div className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-[11px] font-semibold"
+                style={{ background: "rgba(184,137,58,0.1)", border: "1px solid rgba(184,137,58,0.2)", color: "#b8893a" }}>
+                {step}
               </div>
               <div className="pt-1">
-                <h3 className="text-white font-semibold text-sm mb-1">{title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+                <h3 className="font-semibold text-sm mb-1" style={{ fontFamily: "'Playfair Display', serif", color: "#1e1a14" }}>{title}</h3>
+                <p className="text-sm font-light leading-relaxed" style={{ color: "#7a6d5e" }}>{desc}</p>
               </div>
             </div>
           ))}
         </section>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4 mb-16">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-white/[0.06]" />
-          <span className="text-[10px] text-gray-700 tracking-[0.2em] uppercase">Key Features</span>
-          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-white/[0.06]" />
+        {/* ── Key Features ── */}
+        <div className="flex items-center gap-4 mb-10">
+          <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(184,137,58,0.2))" }} />
+          <span className="text-[10px] tracking-[0.2em] uppercase font-light" style={{ color: "#b5a795" }}>Key Features</span>
+          <div className="flex-1 h-px" style={{ background: "linear-gradient(270deg, transparent, rgba(184,137,58,0.2))" }} />
         </div>
 
-        {/* Features */}
-        <section className="pb-16 grid md:grid-cols-2 gap-4">
+        <section className="pb-14 grid md:grid-cols-2 gap-3">
           {features.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="group p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] hover:border-cyan-500/20 transition-all duration-300">
-              <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 w-fit mb-4">
-                <Icon size={18} className="text-cyan-400" />
+            <div key={title} className={`${card} p-6`}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-4"
+                style={{ background: "rgba(184,137,58,0.1)", border: "1px solid rgba(184,137,58,0.18)" }}>
+                <Icon size={17} style={gold} />
               </div>
-              <h3 className="text-white font-semibold mb-2">{title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+              <h3 className="font-semibold mb-1.5 text-[15px]" style={{ fontFamily: "'Playfair Display', serif", color: "#1e1a14" }}>{title}</h3>
+              <p className="text-sm font-light leading-relaxed" style={{ color: "#7a6d5e" }}>{desc}</p>
             </div>
           ))}
         </section>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4 mb-16">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-white/[0.06]" />
-          <span className="text-[10px] text-gray-700 tracking-[0.2em] uppercase">Technology Stack</span>
-          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-white/[0.06]" />
+        {/* ── Tech Stack ── */}
+        <div className="flex items-center gap-4 mb-10">
+          <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(184,137,58,0.2))" }} />
+          <span className="text-[10px] tracking-[0.2em] uppercase font-light" style={{ color: "#b5a795" }}>Technology Stack</span>
+          <div className="flex-1 h-px" style={{ background: "linear-gradient(270deg, transparent, rgba(184,137,58,0.2))" }} />
         </div>
 
-        {/* Tech Stack */}
-        <section className="pb-16 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {techStack.map(({ name, desc, icon, color }) => (
-            <div key={name} className={`p-5 rounded-2xl border bg-white/[0.02] hover:bg-white/[0.04] ${color} transition-all duration-300 text-center`}>
+        <section className="pb-14 grid grid-cols-2 md:grid-cols-4 gap-3">
+          {techStack.map(({ name, desc, icon }) => (
+            <div key={name} className={`${card} p-5 text-center`}>
               <div className="text-3xl mb-3">{icon}</div>
-              <h3 className="text-white font-semibold text-sm mb-1">{name}</h3>
-              <p className="text-gray-600 text-xs leading-relaxed">{desc}</p>
+              <h3 className="font-semibold text-sm mb-1" style={{ color: "#1e1a14" }}>{name}</h3>
+              <p className="text-xs font-light" style={{ color: "#9a8a78" }}>{desc}</p>
             </div>
           ))}
         </section>
 
-        {/* CTA */}
-        <section className="pb-20 text-center">
-          <div className="p-8 rounded-2xl border border-white/[0.05] bg-white/[0.02]">
-            <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 w-fit mx-auto mb-4">
-              <Cloud size={28} className="text-cyan-400" />
+        {/* ── CTA ── */}
+        <section className="pb-20">
+          <div className={`${card} p-8 text-center`}>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+              style={{ background: "rgba(184,137,58,0.1)", border: "1px solid rgba(184,137,58,0.22)" }}>
+              <Cloud size={26} style={gold} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Ready to Store Securely?</h2>
-            <p className="text-gray-500 text-sm mb-6">Upload your first certificate to IPFS</p>
+            <h2 className="text-2xl font-normal mb-2" style={{ fontFamily: "'Playfair Display', serif", color: "#1e1a14" }}>
+              Ready to Store <em className="italic" style={gold}>Securely?</em>
+            </h2>
+            <p className="text-sm font-light mb-6" style={{ color: "#7a6d5e" }}>Upload your first certificate to IPFS</p>
             <Link href="/">
-              <button className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-sm font-semibold shadow-[0_0_25px_rgba(99,102,241,0.25)] hover:shadow-[0_0_35px_rgba(99,102,241,0.4)] hover:-translate-y-[1px] transition-all duration-300">
+              <button className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium text-white transition-all duration-300 hover:-translate-y-[2px]"
+                style={{ background: "linear-gradient(135deg, #c9a24a, #b8893a)", boxShadow: "0 4px 20px rgba(184,137,58,0.3)" }}>
                 Get Started
-                <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform duration-200" />
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
               </button>
             </Link>
           </div>
         </section>
+
       </div>
     </div>
   );
