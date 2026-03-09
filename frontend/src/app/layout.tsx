@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
 
 export const metadata = {
-  title: "E-Certify",
+  title: "Certi-Chain",
   description: "Blockchain Certificate Verification",
 };
 

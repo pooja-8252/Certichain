@@ -212,7 +212,7 @@ export default function Navbar() {
 
               {/* Wordmark */}
               <span className="logo-font font-normal text-[18px] tracking-wide" style={{ color: "#1e1a14" }}>
-                E&#8209;<em className="font-semibold italic" style={{ color: "#b8893a" }}>Certify</em>
+              Certi &#8209;<em className="font-semibold italic" style={{ color: "#b8893a" }}>Chain</em>
               </span>
             </Link>
 

@@ -97,7 +97,8 @@ export default function About() {
             <h1 className="font-playfair font-normal leading-[1.08] mb-5" style={{ fontSize: "clamp(2.8rem,8vw,4.2rem)", color: "#1e1a14" }}>
               About{" "}
               <em className="font-playfair font-semibold italic" style={{ color: "#b8893a" }}>
-                E-Certify
+             Certi-Chain
+
               </em>
             </h1>
 
